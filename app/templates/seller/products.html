@@ -69,6 +69,7 @@
         </div>
 
         <form action="{{ url_for('seller_views.products') }}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <div class="form-group" style="margin-bottom: 1rem;">
                 <label for="p-title" style="display: block; margin-bottom: 0.25rem;">Product Title *</label>
                 <input type="text" id="p-title" name="title" class="form-control" placeholder="e.g., UltraBook 15 Pro M3" required style="width: 100%;">

@@ -34,8 +34,6 @@ def create_app(config_name=None):
     bcrypt.init_app(app)
     login_manager.init_app(app)
     csrf.init_app(app)
-    # Exempt API blueprints from CSRF for seamless JSON REST calls
-    csrf.exempt(app.blueprints.get('auth_api', None) or 'auth_api')
 
     # 3. User loader callback for Flask-Login
     @login_manager.user_loader
@@ -91,7 +89,18 @@ def create_app(config_name=None):
     # 7. Register Blueprints
     register_routes(app)
 
-    # 8. Register CLI Commands
+    # 8. Exempt REST API Blueprints from CSRF for seamless JSON AJAX requests
+    api_blueprint_names = [
+        'auth_api', 'seller_api', 'product_api', 'search_api',
+        'copilot_api', 'compare_api', 'review_api', 'cart_api',
+        'wishlist_api', 'mission_api', 'order_api', 'system_api'
+    ]
+    for bp_name in api_blueprint_names:
+        bp = app.blueprints.get(bp_name)
+        if bp:
+            csrf.exempt(bp)
+
+    # 9. Register CLI Commands
     _register_cli_commands(app)
 
     logger.info(f"ShopSense AI initialized in {app.config.get('ENV', 'development')} mode.")

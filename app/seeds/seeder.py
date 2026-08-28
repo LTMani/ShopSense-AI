@@ -314,6 +314,8 @@ def run_full_seeder():
             )
             p.set_key_features_list([f"High grade {brand} engineering", "Optimized power efficiency", "Comprehensive 1-year warranty", "Plug-and-play compatibility"])
             p.aspect_sentiment_summary = json.dumps({'battery': random.randint(70, 95), 'performance': random.randint(75, 98), 'build_quality': random.randint(72, 96), 'value': random.randint(78, 96)})
+            db.session.add(p)
+            all_products.append(p)
         db.session.commit()
 
         # Add primary gallery images for all products

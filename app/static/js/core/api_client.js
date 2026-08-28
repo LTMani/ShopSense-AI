@@ -3,9 +3,13 @@
  */
 const ShopSenseAPI = {
     async request(url, options = {}) {
+        const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+        const csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : '';
+
         const defaultHeaders = {
             'Content-Type': 'application/json',
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+            ...(csrfToken ? { 'X-CSRFToken': csrfToken } : {})
         };
 
         const config = {
