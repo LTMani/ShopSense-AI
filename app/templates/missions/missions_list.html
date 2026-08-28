@@ -42,3 +42,7 @@
     <div id="mission-result-area"></div>
 </div>
 {% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/missions/missions.js') }}"></script>
+{% endblock %}

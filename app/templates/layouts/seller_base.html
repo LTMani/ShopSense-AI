@@ -113,8 +113,12 @@
     <!-- Scripts -->
     <script src="{{ url_for('static', filename='js/core/api_client.js') }}"></script>
     <script src="{{ url_for('static', filename='js/core/toast.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/seller/seller.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/seller/seller_copilot.js') }}"></script>
     <script>
-        lucide.createIcons();
+        if (window.lucide) {
+            lucide.createIcons();
+        }
     </script>
     {% block extra_js %}{% endblock %}
 </body>

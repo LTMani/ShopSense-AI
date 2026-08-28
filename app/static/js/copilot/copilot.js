@@ -5,15 +5,17 @@ const ShopSenseCopilot = {
     activeConversationId: null,
 
     async sendMessage(event) {
-        event.preventDefault();
+        if (event && event.preventDefault) {
+            event.preventDefault();
+        }
         const input = document.getElementById('copilot-input');
         const stream = document.getElementById('chat-stream');
-        const text = input.value.trim();
+        const text = input ? input.value.trim() : '';
         if (!text) return;
 
         // Render user message bubble
         this.appendMessage('user', text);
-        input.value = '';
+        if (input) input.value = '';
 
         // Render loading state
         const loadingId = 'loading-' + Date.now();
@@ -146,6 +148,14 @@ const ShopSenseCopilot = {
             }
         } catch (err) {
             ShopSenseToast.error('Failed to load session history');
+        }
+    },
+
+    sendPrompt(promptText) {
+        const input = document.getElementById('copilot-input');
+        if (input) {
+            input.value = promptText;
+            this.sendMessage();
         }
     }
 };

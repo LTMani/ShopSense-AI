@@ -46,6 +46,12 @@
 
         <!-- Input Bar -->
         <div class="chat-input-bar">
+            <div class="quick-prompts-row" style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem;">
+                <button type="button" class="btn btn-outline btn-sm" onclick="ShopSenseCopilot.sendPrompt('Recommend the best coding laptop with 16GB RAM under ₹70,000')">💻 Coding Laptop < ₹70k</button>
+                <button type="button" class="btn btn-outline btn-sm" onclick="ShopSenseCopilot.sendPrompt('Noise cancelling ANC wireless headphones for travel with long battery')">🎧 ANC Headphones</button>
+                <button type="button" class="btn btn-outline btn-sm" onclick="ShopSenseCopilot.sendPrompt('High-performance gaming console with 4K support')">🎮 4K Gaming</button>
+                <button type="button" class="btn btn-outline btn-sm" onclick="ShopSenseCopilot.sendPrompt('Ergonomic motorized height adjustable standing desk')">🪑 Standing Desk</button>
+            </div>
             <form id="copilot-form" onsubmit="ShopSenseCopilot.sendMessage(event)">
                 <input type="text" id="copilot-input" class="form-control" placeholder="Describe your shopping requirements or refine: 'Battery matters more than gaming'..." autofocus>
                 <button type="submit" class="btn btn-primary" id="btn-send-copilot"><i data-lucide="send"></i></button>

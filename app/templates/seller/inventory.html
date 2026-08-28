@@ -38,7 +38,7 @@
                         <span class="badge badge-{{ item.stock_status }}">{{ item.stock_status|capitalize }}</span>
                     </td>
                     <td>
-                        <button class="btn btn-outline btn-xs" onclick="ShopSenseSeller.restock({{ item.id }}, '{{ item.product_title }}')">Restock +50</button>
+                        <button class="btn btn-outline btn-xs" data-id="{{ item.id }}" data-title="{{ item.product_title }}" onclick="ShopSenseSeller.restock({{ item.id }}, this.dataset.title)">Restock +50</button>
                     </td>
                 </tr>
             {% endfor %}

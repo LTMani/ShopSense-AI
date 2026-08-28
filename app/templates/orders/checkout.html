@@ -64,7 +64,7 @@
             <div class="summary-card">
                 <h3>Order Review ({{ cart.total_items_count }} items)</h3>
                 <div class="checkout-items-preview">
-                    {% for item in cart.items %}
+                    {% for item in cart['items'] %}
                         <div class="checkout-item-line">
                             <span>{{ item.product.title[:30] }}... &times; {{ item.quantity }}</span>
                             <span>{{ item.total_price|currency }}</span>

@@ -11,10 +11,12 @@ const ShopSenseSellerCopilot = {
     },
 
     async send(event) {
-        event.preventDefault();
+        if (event && event.preventDefault) {
+            event.preventDefault();
+        }
         const input = document.getElementById('seller-copilot-input');
         const stream = document.getElementById('seller-chat-stream');
-        const query = input.value.trim();
+        const query = input ? input.value.trim() : '';
         if (!query) return;
 
         // Render user message
