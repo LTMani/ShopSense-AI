@@ -74,9 +74,108 @@ class Product(db.Model):
             if primary:
                 return primary.image_url
             first = self.images.first()
-            return first.image_url if first else '/static/img/placeholder.svg'
+            if first:
+                return first.image_url
         except Exception:
-            return '/static/img/placeholder.svg'
+            pass
+
+        # Intelligent category & brand specific high-definition image mapping
+        title_lower = (self.title or '').lower()
+        cat_lower = (self.category.name if self.category else '').lower()
+
+        # 1. Audio & Headphones (Checked first to avoid 'phone' matching 'headphone')
+        if 'airpods' in title_lower or 'buds' in title_lower or 'earbuds' in title_lower or 'wf-1000' in title_lower:
+            return 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=800&q=80'
+        if 'wh-1000' in title_lower or 'headphone' in title_lower or 'accentum' in title_lower or 'sennheiser' in title_lower:
+            return 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80'
+        if 'speaker' in title_lower or 'marshall' in title_lower or 'jbl' in title_lower or 'soundbar' in title_lower:
+            return 'https://images.unsplash.com/photo-1545454675-3531b543be5d?w=800&q=80'
+        if 'audio' in cat_lower or 'headphone' in cat_lower or 'headset' in title_lower:
+            return 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80'
+
+        # 2. Laptops & Computers
+        if 'macbook' in title_lower or ('apple' in title_lower and 'laptop' in cat_lower):
+            return 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&q=80'
+        if 'thinkpad' in title_lower or ('lenovo' in title_lower and 'laptop' in cat_lower):
+            return 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&q=80'
+        if 'dell' in title_lower or 'xps' in title_lower or 'inspiron' in title_lower:
+            return 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=800&q=80'
+        if 'rog' in title_lower or 'tuf' in title_lower or ('gaming' in title_lower and 'laptop' in cat_lower):
+            return 'https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=800&q=80'
+        if 'laptop' in cat_lower or 'computer' in cat_lower:
+            return 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&q=80'
+
+        # 3. Smartphones & Tablets
+        if 'iphone' in title_lower:
+            return 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&q=80'
+        if 'galaxy' in title_lower or 's24' in title_lower or 'nord' in title_lower:
+            return 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=800&q=80'
+        if 'ipad' in title_lower or 'tab' in title_lower or 'tablet' in cat_lower:
+            return 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=800&q=80'
+        if 'smartphone' in cat_lower:
+            return 'https://images.unsplash.com/photo-1511707171634-5f897ff02560?w=800&q=80'
+
+        # 4. Cameras
+        if 'action' in title_lower or 'gopro' in title_lower or 'insta360' in title_lower:
+            return 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=800&q=80'
+        if 'pocket' in title_lower or 'gimbal' in title_lower or 'dji' in title_lower:
+            return 'https://images.unsplash.com/photo-1587749091717-b7324c4e0952?w=800&q=80'
+        if 'camera' in cat_lower or 'photography' in cat_lower or 'lens' in title_lower:
+            return 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&q=80'
+
+        # 5. Monitors & Displays
+        if 'curved' in title_lower or 'ultrawide' in title_lower or 'odyssey' in title_lower or 'g9' in title_lower:
+            return 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=800&q=80'
+        if 'monitor' in cat_lower or 'display' in cat_lower:
+            return 'https://images.unsplash.com/photo-1547082299-de196ea013d6?w=800&q=80'
+
+        # 6. Computer Peripherals
+        if 'keyboard' in title_lower or 'keychron' in title_lower or 'tkl' in title_lower:
+            return 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800&q=80'
+        if 'mouse' in title_lower or 'deathadder' in title_lower or 'mx master' in title_lower:
+            return 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=800&q=80'
+        if 'dock' in title_lower or 'hub' in title_lower or 'stream deck' in title_lower:
+            return 'https://images.unsplash.com/photo-1616440347437-b1c73416efc2?w=800&q=80'
+        if 'peripheral' in cat_lower or 'webcam' in title_lower:
+            return 'https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=800&q=80'
+
+        # 7. Smart Wearables
+        if 'apple watch' in title_lower:
+            return 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80'
+        if 'garmin' in title_lower or 'forerunner' in title_lower or 'epix' in title_lower:
+            return 'https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?w=800&q=80'
+        if 'watch' in cat_lower or 'wearable' in cat_lower or 'band' in title_lower:
+            return 'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=800&q=80'
+
+        # 8. Gaming & Consoles
+        if 'playstation' in title_lower or 'ps5' in title_lower or 'dualsense' in title_lower:
+            return 'https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&q=80'
+        if 'xbox' in title_lower or 'controller' in title_lower:
+            return 'https://images.unsplash.com/photo-1600080972464-8e5f35f63d08?w=800&q=80'
+        if 'switch' in title_lower or 'nintendo' in title_lower or 'ally' in title_lower:
+            return 'https://images.unsplash.com/photo-1578303512597-81e6cc155b3e?w=800&q=80'
+        if 'console' in cat_lower or 'gaming' in cat_lower:
+            return 'https://images.unsplash.com/photo-1622979135225-d2ba269bc1df?w=800&q=80'
+
+        # 9. Office & Study Furniture
+        if 'desk' in title_lower or 'table' in title_lower:
+            return 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=800&q=80'
+        if 'chair' in title_lower or 'ergosmart' in title_lower or 'featherlite' in title_lower:
+            return 'https://images.unsplash.com/photo-1580481077111-2092c246f406?w=800&q=80'
+        if 'furniture' in cat_lower:
+            return 'https://images.unsplash.com/photo-1598550476439-6847785fcea6?w=800&q=80'
+
+        # 10. Smart Home & Appliances
+        if 'light' in title_lower or 'philips' in title_lower or 'bulb' in title_lower:
+            return 'https://images.unsplash.com/photo-1550985616-10810253b84d?w=800&q=80'
+        if 'purifier' in title_lower or 'vacuum' in title_lower or 'dyson' in title_lower:
+            return 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=800&q=80'
+        if 'echo' in title_lower or 'nest' in title_lower or 'hub' in title_lower:
+            return 'https://images.unsplash.com/photo-1543512214-318c7553f230?w=800&q=80'
+        if 'appliance' in cat_lower or 'smart home' in cat_lower:
+            return 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80'
+
+        return 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80'
 
     def get_key_features_list(self):
         try:
