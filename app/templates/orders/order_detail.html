@@ -15,7 +15,7 @@
             <div class="card">
                 <h3>Items in Order</h3>
                 <div class="order-lines-list">
-                    {% for item in order.items %}
+                    {% for item in order['items'] %}
                         <div class="order-line-row">
                             <div>
                                 <h4>{{ item.product_title }}</h4>
@@ -32,9 +32,9 @@
         <div class="order-info-col">
             <div class="card">
                 <h3>Delivery Address</h3>
-                <p><strong>{{ order.shipping_address.name }}</strong></p>
-                <p>{{ order.shipping_address.line1 }}</p>
-                <p>{{ order.shipping_address.city }}, {{ order.shipping_address.state }} - {{ order.shipping_address.postal_code }}</p>
+                <p><strong>{{ order['shipping_address']['name'] }}</strong></p>
+                <p>{{ order['shipping_address']['line1'] }}</p>
+                <p>{{ order['shipping_address']['city'] }}, {{ order['shipping_address']['state'] }} - {{ order['shipping_address']['postal_code'] }}</p>
             </div>
 
             <div class="card">
