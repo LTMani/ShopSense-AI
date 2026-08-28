@@ -1,0 +1,78 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Product Comparison Matrix — ShopSense AI{% endblock %}
+
+{% block content %}
+<div class="container comparison-page">
+    <div class="comparison-header">
+        <h1>Intelligent Product Comparison</h1>
+        <p>Side-by-side technical specification alignment and AI diagnostic verdict</p>
+    </div>
+
+    {% if comparison.products %}
+        <!-- AI Comparison Verdict Box -->
+        {% if comparison.verdict %}
+            <div class="comparison-verdict-box">
+                <div class="verdict-icon"><i data-lucide="sparkles"></i></div>
+                <div class="verdict-content">
+                    <h4>AI Comparison Verdict</h4>
+                    <p>{{ comparison.verdict|safe }}</p>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Comparison Table -->
+        <div class="comparison-table-wrapper">
+            <table class="table comparison-table">
+                <thead>
+                    <tr>
+                        <th class="feature-col">Product / Feature</th>
+                        {% for p in comparison.products %}
+                            <th class="product-col">
+                                <img src="{{ p.primary_image_url }}" alt="{{ p.title }}" class="compare-thumb">
+                                <h3>{{ p.title }}</h3>
+                                <span class="compare-price">{{ p.current_price|currency }}</span>
+                                <button class="btn btn-primary btn-xs" onclick="ShopSenseCart.add({{ p.id }}, 1)">Add to Cart</button>
+                            </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="section-divider-row"><td colspan="{{ comparison.products|length + 1 }}">Rating & Sentiment</td></tr>
+                    <tr>
+                        <td class="spec-label">Customer Rating</td>
+                        {% for p in comparison.products %}
+                            <td><strong>{{ p.average_rating }}★</strong> ({{ p.total_reviews_count }} reviews)</td>
+                        {% endfor %}
+                    </tr>
+                    {% for aspect, scores in comparison.aspects_matrix.items() %}
+                        <tr>
+                            <td class="spec-label">{{ aspect|capitalize }} Satisfaction</td>
+                            {% for p in comparison.products %}
+                                <td>{{ scores.get(p.id, '—') }}% Positive</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+
+                    <tr class="section-divider-row"><td colspan="{{ comparison.products|length + 1 }}">Technical Specifications</td></tr>
+                    {% for spec_name, vals in comparison.attributes_matrix.items() %}
+                        <tr>
+                            <td class="spec-label">{{ spec_name }}</td>
+                            {% for p in comparison.products %}
+                                <td>{{ vals.get(p.id, '—') }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <i data-lucide="scale" class="empty-icon"></i>
+            <h3>No products selected for comparison</h3>
+            <p>Browse products and click "Add to Compare" on any 2 to 4 items.</p>
+            <a href="{{ url_for('product_views.product_list') }}" class="btn btn-primary">Browse Marketplace</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

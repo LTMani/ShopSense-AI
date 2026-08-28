@@ -1,0 +1,35 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Search: {{ query }} — ShopSense AI{% endblock %}
+
+{% block content %}
+<div class="container search-results-page">
+    <div class="search-hero-box">
+        <h1>Search Results for <span class="highlight">"{{ query }}"</span></h1>
+        <p>Found {{ total }} matching items using hybrid semantic NLP ranking.</p>
+
+        {% if extracted %}
+            <div class="extracted-chips-row">
+                <span class="chips-label">AI Detected Constraints:</span>
+                {% if extracted.budget %}<span class="badge badge-accent">Budget: ₹{{ "{:,.0f}".format(extracted.budget) }}</span>{% endif %}
+                {% if extracted.category %}<span class="badge badge-outline">Category: {{ extracted.category }}</span>{% endif %}
+                {% if extracted.brand %}<span class="badge badge-outline">Brand: {{ extracted.brand }}</span>{% endif %}
+                {% for u in extracted.usage %}<span class="badge badge-outline">Focus: {{ u }}</span>{% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="products-grid">
+        {% for product in products %}
+            {% include 'components/product_card.html' %}
+        {% else %}
+            <div class="empty-state">
+                <i data-lucide="search-x" class="empty-icon"></i>
+                <h3>No exact matches found</h3>
+                <p>Try refining your query or asking the AI Shopping Copilot.</p>
+                <a href="{{ url_for('copilot_views.copilot_page') }}" class="btn btn-primary">Open AI Shopping Copilot</a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

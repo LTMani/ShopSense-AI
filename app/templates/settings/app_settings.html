@@ -1,0 +1,17 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Application Settings — ShopSense AI{% endblock %}
+
+{% block content %}
+<div class="container settings-page">
+    <h1>Platform Configuration & AI Settings</h1>
+    <div class="card settings-card">
+        <h3>AI Provider & Engine Status</h3>
+        <p><strong>Current Active Provider:</strong> <code>{{ config.AI_PROVIDER }}</code></p>
+        <p><strong>Model:</strong> <code>{{ config.AI_MODEL }}</code></p>
+        <p><strong>Local Heuristic Engine:</strong> <span class="badge badge-success">Operational</span></p>
+        <p><strong>Relational Database:</strong> <span class="badge badge-success">SQLite / PostgreSQL-Ready</span></p>
+        <p><strong>Payment Processing:</strong> <span class="badge badge-outline">Simulated (Zero Real Financial APIs)</span></p>
+    </div>
+</div>
+{% endblock %}

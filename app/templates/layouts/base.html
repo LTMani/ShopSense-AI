@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ShopSense AI — Intelligent Shopping & Seller Platform{% endblock %}</title>
+    <meta name="description" content="ShopSense AI: AI-powered e-commerce intelligence with natural-language shopping copilot, smart recommendations, product comparison, and seller analytics.">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Base & Component CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base/variables.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base/reset.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base/typography.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components/buttons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components/cards.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components/badges.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components/forms.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components/tables.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components/modals.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components/navbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components/footer.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/marketplace.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="shopsense-app">
+    <!-- Top Announcement Bar -->
+    <div class="top-bar">
+        <div class="container top-bar-inner">
+            <div class="top-bar-left">
+                <span class="badge badge-accent">AI Powered</span>
+                <span class="top-bar-text">Natural-Language Shopping Copilot & Real-Time Intelligence</span>
+            </div>
+            <div class="top-bar-right">
+                {% if is_seller %}
+                    <a href="{{ url_for('seller_views.dashboard') }}" class="top-bar-link"><i data-lucide="layout-dashboard"></i> Seller Portal</a>
+                {% else %}
+                    <a href="{{ url_for('auth_views.seller_register') }}" class="top-bar-link"><i data-lucide="store"></i> Become a Seller</a>
+                {% endif %}
+                <a href="{{ url_for('system_views.app_settings') }}" class="top-bar-link"><i data-lucide="settings"></i> Settings</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <header class="main-navbar sticky">
+        <div class="container navbar-inner">
+            <a href="{{ url_for('system_views.landing_page') }}" class="navbar-brand">
+                <div class="brand-logo"><i data-lucide="sparkles"></i></div>
+                <div class="brand-text">
+                    <span class="brand-name">ShopSense</span>
+                    <span class="brand-ai">AI</span>
+                </div>
+            </a>
+
+            <!-- Search Form with Natural Language placeholder -->
+            <form action="{{ url_for('search_views.search') }}" method="GET" class="nav-search-form">
+                <div class="search-input-wrapper">
+                    <i data-lucide="search" class="search-icon"></i>
+                    <input type="text" name="q" class="nav-search-input" placeholder="Ask AI: 'Lightweight coding laptop under ₹60,000' or search products..." value="{{ request.args.get('q', '') }}">
+                    <button type="submit" class="btn btn-primary btn-search"><i data-lucide="arrow-right"></i></button>
+                </div>
+            </form>
+
+            <!-- Nav Actions -->
+            <nav class="nav-actions">
+                <a href="{{ url_for('copilot_views.copilot_page') }}" class="btn btn-copilot-pill">
+                    <i data-lucide="bot"></i>
+                    <span>AI Copilot</span>
+                </a>
+                <a href="{{ url_for('comparison_views.compare_page') }}" class="nav-icon-btn" title="Product Comparison">
+                    <i data-lucide="scale"></i>
+                    <span class="nav-icon-label">Compare</span>
+                </a>
+                <a href="{{ url_for('mission_views.missions_list') }}" class="nav-icon-btn" title="Shopping Missions">
+                    <i data-lucide="compass"></i>
+                    <span class="nav-icon-label">Missions</span>
+                </a>
+                <a href="{{ url_for('wishlist_views.wishlist_page') }}" class="nav-icon-btn" title="Wishlist">
+                    <i data-lucide="heart"></i>
+                    {% if wishlist_count > 0 %}
+                        <span class="badge-count" id="nav-wishlist-count">{{ wishlist_count }}</span>
+                    {% endif %}
+                    <span class="nav-icon-label">Wishlist</span>
+                </a>
+                <a href="{{ url_for('cart_views.cart_page') }}" class="nav-icon-btn" title="Shopping Cart">
+                    <i data-lucide="shopping-cart"></i>
+                    {% if cart_count > 0 %}
+                        <span class="badge-count" id="nav-cart-count">{{ cart_count }}</span>
+                    {% endif %}
+                    <span class="nav-icon-label">Cart</span>
+                </a>
+
+                {% if current_user.is_authenticated %}
+                    <div class="user-dropdown">
+                        <a href="{{ url_for('customer_views.dashboard') }}" class="btn btn-outline btn-sm user-menu-btn">
+                            <i data-lucide="user"></i>
+                            <span>{{ current_user.first_name }}</span>
+                        </a>
+                        <div class="dropdown-menu">
+                            {% if current_user.is_seller %}
+                                <a href="{{ url_for('seller_views.dashboard') }}" class="dropdown-item"><i data-lucide="store"></i> Seller Dashboard</a>
+                            {% else %}
+                                <a href="{{ url_for('customer_views.dashboard') }}" class="dropdown-item"><i data-lucide="user-check"></i> Customer Hub</a>
+                                <a href="{{ url_for('order_views.orders_list') }}" class="dropdown-item"><i data-lucide="package"></i> My Orders</a>
+                                <a href="{{ url_for('customer_views.profile') }}" class="dropdown-item"><i data-lucide="settings"></i> Profile Settings</a>
+                            {% endif %}
+                            <hr class="dropdown-divider">
+                            <a href="{{ url_for('auth_views.logout') }}" class="dropdown-item text-danger"><i data-lucide="log-out"></i> Log Out</a>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="auth-buttons">
+                        <a href="{{ url_for('auth_views.login') }}" class="btn btn-ghost btn-sm">Sign In</a>
+                        <a href="{{ url_for('auth_views.register') }}" class="btn btn-primary btn-sm">Get Started</a>
+                    </div>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <!-- Flash Messages Container -->
+    <div class="container flash-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible">
+                        <div class="alert-content">
+                            <i data-lucide="{% if category == 'success' %}check-circle{% elif category == 'danger' %}alert-circle{% else %}info{% endif %}"></i>
+                            <span>{{ message }}</span>
+                        </div>
+                        <button type="button" class="btn-close" onclick="this.parentElement.remove()">&times;</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main Page Content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Global Footer -->
+    <footer class="main-footer">
+        <div class="container footer-grid">
+            <div class="footer-col brand-col">
+                <div class="brand-logo-footer">
+                    <i data-lucide="sparkles"></i>
+                    <span class="brand-title">ShopSense AI</span>
+                </div>
+                <p class="footer-tagline">Shop Smarter. Sell Smarter. Next-generation e-commerce intelligence powered by natural-language AI.</p>
+                <div class="footer-meta">
+                    <span class="badge badge-outline">Flask 3.x</span>
+                    <span class="badge badge-outline">SQLite & Postgres Ready</span>
+                    <span class="badge badge-outline">Vanilla JS</span>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4 class="footer-heading">Customer Intelligence</h4>
+                <ul class="footer-links">
+                    <li><a href="{{ url_for('copilot_views.copilot_page') }}">AI Shopping Copilot</a></li>
+                    <li><a href="{{ url_for('product_views.product_list') }}">Product Catalog</a></li>
+                    <li><a href="{{ url_for('comparison_views.compare_page') }}">Product Comparison</a></li>
+                    <li><a href="{{ url_for('mission_views.missions_list') }}">Shopping Missions</a></li>
+                    <li><a href="{{ url_for('wishlist_views.wishlist_page') }}">Smart Wishlist</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4 class="footer-heading">Seller Intelligence</h4>
+                <ul class="footer-links">
+                    <li><a href="{{ url_for('seller_views.dashboard') }}">Seller Dashboard</a></li>
+                    <li><a href="{{ url_for('seller_views.analytics') }}">Sales Analytics</a></li>
+                    <li><a href="{{ url_for('seller_views.inventory') }}">Inventory Intelligence</a></li>
+                    <li><a href="{{ url_for('seller_views.forecasting') }}">Demand Forecasting</a></li>
+                    <li><a href="{{ url_for('seller_views.seller_copilot') }}">Seller AI Copilot</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4 class="footer-heading">Account & Support</h4>
+                <ul class="footer-links">
+                    <li><a href="{{ url_for('auth_views.login') }}">Customer Sign In</a></li>
+                    <li><a href="{{ url_for('auth_views.seller_register') }}">Seller Onboarding</a></li>
+                    <li><a href="{{ url_for('system_views.app_settings') }}">Platform Settings</a></li>
+                    <li><a href="{{ url_for('system_views.health') }}">API System Health</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>&copy; 2026 ShopSense AI Platform. All rights reserved. Built with pure Python, Flask, and Vanilla Web Standards.</p>
+        </div>
+    </footer>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Core Scripts -->
+    <script src="{{ url_for('static', filename='js/core/api_client.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/core/toast.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/core/state.js') }}"></script>
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,40 @@
+{% extends 'layouts/seller_base.html' %}
+
+{% block page_title %}Sales & Performance Analytics{% endblock %}
+{% block page_subtitle %}Detailed conversion scoring, margins, and product performance grades{% endblock %}
+
+{% block content %}
+<div class="seller-card">
+    <h3>Product Performance Score Matrix</h3>
+    <p class="text-muted">Calculated using traffic velocity, conversion rate, return rate, and review sentiment.</p>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Grade</th>
+                <th>Overall Index</th>
+                <th>Velocity</th>
+                <th>Conversion</th>
+                <th>Sentiment</th>
+                <th>Dead Stock?</th>
+                <th>AI Strategic Advice</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in performance_rankings %}
+                <tr>
+                    <td><strong>{{ p.product_title }}</strong></td>
+                    <td><span class="badge badge-grade-{{ p.performance_grade }}">{{ p.performance_grade }}</span></td>
+                    <td><strong>{{ p.overall_score }} / 100</strong></td>
+                    <td>{{ p.sales_velocity_score }}</td>
+                    <td>{{ p.conversion_score }}</td>
+                    <td>{{ p.rating_sentiment_score }}</td>
+                    <td>{% if p.is_dead_stock %}<span class="badge badge-danger">YES ({{ p.days_since_last_sale }}d)</span>{% else %}<span class="badge badge-success">Active</span>{% endif %}</td>
+                    <td><em>{{ p.action_recommendation }}</em></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

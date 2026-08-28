@@ -1,0 +1,95 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Simulated Checkout — ShopSense AI{% endblock %}
+
+{% block content %}
+<div class="container checkout-page">
+    <h1>Simulated Order Checkout</h1>
+    <p class="text-muted">ShopSense AI internal simulation checkout (No real payment processing required).</p>
+
+    <form action="{{ url_for('order_views.checkout_page') }}" method="POST" class="checkout-grid">
+        <div class="checkout-form-col">
+            <div class="checkout-card">
+                <h3>1. Delivery Address</h3>
+                <div class="form-group">
+                    <label for="shipping_name">Full Recipient Name</label>
+                    <input type="text" id="shipping_name" name="shipping_name" class="form-control" value="{{ current_user.full_name }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="shipping_phone">Contact Phone</label>
+                    <input type="tel" id="shipping_phone" name="shipping_phone" class="form-control" value="{{ current_user.phone or '+91 9876543210' }}">
+                </div>
+                <div class="form-group">
+                    <label for="shipping_address_line1">Street Address</label>
+                    <input type="text" id="shipping_address_line1" name="shipping_address_line1" class="form-control" value="Flat 402, Green Glen Heights, Bellandur" required>
+                </div>
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label for="shipping_city">City</label>
+                        <input type="text" id="shipping_city" name="shipping_city" class="form-control" value="Bengaluru" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="shipping_state">State</label>
+                        <input type="text" id="shipping_state" name="shipping_state" class="form-control" value="Karnataka" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="shipping_postal_code">PIN Code</label>
+                        <input type="text" id="shipping_postal_code" name="shipping_postal_code" class="form-control" value="560103" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="checkout-card">
+                <h3>2. Payment Method (Simulated)</h3>
+                <div class="payment-options">
+                    <label class="payment-radio-card">
+                        <input type="radio" name="payment_method" value="simulated_upi" checked>
+                        <div class="radio-content">
+                            <strong>Simulated UPI / Instant Pay</strong>
+                            <p>Instant virtual transaction confirmation</p>
+                        </div>
+                    </label>
+                    <label class="payment-radio-card">
+                        <input type="radio" name="payment_method" value="simulated_card">
+                        <div class="radio-content">
+                            <strong>Simulated Credit / Debit Card</strong>
+                            <p>Test token checkout</p>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="checkout-summary-col">
+            <div class="summary-card">
+                <h3>Order Review ({{ cart.total_items_count }} items)</h3>
+                <div class="checkout-items-preview">
+                    {% for item in cart.items %}
+                        <div class="checkout-item-line">
+                            <span>{{ item.product.title[:30] }}... &times; {{ item.quantity }}</span>
+                            <span>{{ item.total_price|currency }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+                <hr>
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span>{{ cart.subtotal_amount|currency }}</span>
+                </div>
+                <div class="summary-row">
+                    <span>18% GST</span>
+                    <span>{{ (cart.subtotal_amount * 0.18)|currency }}</span>
+                </div>
+                <div class="summary-row total-row">
+                    <strong>Total to Pay</strong>
+                    <strong>{{ (cart.subtotal_amount * 1.18)|currency }}</strong>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block btn-lg">
+                    <i data-lucide="check"></i> Confirm & Complete Order
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

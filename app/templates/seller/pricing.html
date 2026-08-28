@@ -1,0 +1,42 @@
+{% extends 'layouts/seller_base.html' %}
+
+{% block page_title %}Pricing Intelligence & Elasticity{% endblock %}
+{% block page_subtitle %}Data-driven pricing suggestions for velocity optimization and clearance{% endblock %}
+
+{% block content %}
+<div class="seller-card">
+    <h3>AI Pricing Recommendations</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Current Price</th>
+                <th>Recommended</th>
+                <th>Delta</th>
+                <th>Strategy Action</th>
+                <th>Rationale</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rec in pricing_recommendations %}
+                <tr>
+                    <td><strong>{{ rec.product_title }}</strong></td>
+                    <td>{{ rec.current_price|currency }}</td>
+                    <td><strong>{{ rec.recommended_price|currency }}</strong></td>
+                    <td>
+                        {% if rec.price_change_amount < 0 %}
+                            <span class="text-danger">{{ rec.price_change_amount|currency }}</span>
+                        {% elif rec.price_change_amount > 0 %}
+                            <span class="text-success">+{{ rec.price_change_amount|currency }}</span>
+                        {% else %}
+                            <span class="text-muted">0.00</span>
+                        {% endif %}
+                    </td>
+                    <td><span class="badge badge-outline">{{ rec.action|capitalize }}</span></td>
+                    <td>{{ rec.reason }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

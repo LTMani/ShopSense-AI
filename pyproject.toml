@@ -1,0 +1,28 @@
+[project]
+name = "shopsense-ai"
+version = "1.0.0"
+description = "ShopSense AI - Intelligent Shopping & Seller Intelligence Platform"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "Flask>=3.0.3",
+    "Flask-SQLAlchemy>=3.1.1",
+    "Flask-Login>=0.6.3",
+    "Flask-Bcrypt>=1.0.1",
+    "Flask-WTF>=1.2.1",
+    "WTForms>=3.1.2",
+    "marshmallow>=3.21.3",
+    "python-dotenv>=1.0.1",
+    "SQLAlchemy>=2.0.36",
+    "requests>=2.32.3"
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+addopts = "-v --strict-markers"
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::UserWarning"
+]

@@ -1,0 +1,59 @@
+{% extends 'layouts/seller_base.html' %}
+
+{% block page_title %}Seller Product Catalog{% endblock %}
+{% block page_subtitle %}Manage pricing, status, and view velocity metrics for your active SKUs{% endblock %}
+
+{% block content %}
+<div class="seller-card">
+    <div class="card-header-row">
+        <h3>Your Listed Products ({{ products|length }} SKUs)</h3>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>SKU</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Cost</th>
+                    <th>Stock</th>
+                    <th>Rating</th>
+                    <th>Velocity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in products %}
+                    <tr>
+                        <td>
+                            <div class="table-prod-info">
+                                <img src="{{ p.primary_image_url }}" alt="{{ p.title }}" class="table-thumb">
+                                <div>
+                                    <strong><a href="{{ url_for('product_views.product_detail', slug=p.slug) }}" target="_blank">{{ p.title }}</a></strong>
+                                    <span class="table-sub">{{ p.brand }}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td><code>{{ p.sku }}</code></td>
+                        <td>{{ p.category.name if p.category else '—' }}</td>
+                        <td><strong>{{ p.current_price|currency }}</strong></td>
+                        <td>{{ p.cost_price|currency }}</td>
+                        <td>
+                            {% if p.inventory %}
+                                <span class="badge {% if p.inventory.available_quantity <= 5 %}badge-danger{% elif p.inventory.available_quantity <= 20 %}badge-warning{% else %}badge-success{% endif %}">
+                                    {{ p.inventory.available_quantity }} in stock
+                                </span>
+                            {% else %}
+                                0
+                            {% endif %}
+                        </td>
+                        <td>{{ p.average_rating }}★ ({{ p.total_reviews_count }})</td>
+                        <td>{{ p.purchases_count }} sold</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

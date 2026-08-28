@@ -1,0 +1,23 @@
+{% extends 'layouts/seller_base.html' %}
+
+{% block page_title %}Customer Cohort & RFM Segmentation{% endblock %}
+{% block page_subtitle %}Customer clusters based on Recency, Frequency, and Monetary parameters{% endblock %}
+
+{% block content %}
+<div class="segments-grid">
+    {% for seg in segments %}
+        <div class="segment-card">
+            <div class="segment-card-header">
+                <h3>{{ seg.name }}</h3>
+                <span class="badge badge-accent">{{ seg.member_count }} Shoppers</span>
+            </div>
+            <p class="seg-desc">{{ seg.description }}</p>
+            <div class="seg-metric">Average Lifetime Spend: <strong>{{ seg.average_spend|currency }}</strong></div>
+            <div class="seg-strategy">
+                <strong>Recommended Marketing Strategy:</strong>
+                <p>{{ seg.recommended_strategy }}</p>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

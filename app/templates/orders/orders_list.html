@@ -1,0 +1,37 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Order History — ShopSense AI{% endblock %}
+
+{% block content %}
+<div class="container orders-page">
+    <h1>Your Order History</h1>
+    <p>Track past orders and delivery progress</p>
+
+    <div class="orders-list">
+        {% for order in orders %}
+            <div class="order-card">
+                <div class="order-card-header">
+                    <div>
+                        <span class="order-number">Order #{{ order.order_number }}</span>
+                        <span class="order-date">Placed on {{ order.created_at|dateformat }}</span>
+                    </div>
+                    <div class="order-status-badge badge-{{ order.status }}">{{ order.status|capitalize }}</div>
+                </div>
+                <div class="order-card-body">
+                    <div class="order-summary-metrics">
+                        <span>Total: <strong>{{ order.total_amount|currency }}</strong></span>
+                        <span>Items: <strong>{{ order.items.count() }}</strong></span>
+                    </div>
+                    <a href="{{ url_for('order_views.order_detail', order_number=order.order_number) }}" class="btn btn-outline btn-sm">View Details & Invoice</a>
+                </div>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <i data-lucide="package" class="empty-icon"></i>
+                <h3>No past orders found</h3>
+                <a href="{{ url_for('product_views.product_list') }}" class="btn btn-primary">Start Shopping</a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

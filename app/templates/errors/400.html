@@ -1,0 +1,14 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}400 — Bad Request{% endblock %}
+
+{% block content %}
+<div class="container error-page">
+    <div class="error-card">
+        <h1 class="error-code">400</h1>
+        <h2>Bad Request</h2>
+        <p>The request could not be processed.</p>
+        <a href="{{ url_for('system_views.landing_page') }}" class="btn btn-primary">Return to Homepage</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Shopping Cart — ShopSense AI{% endblock %}
+
+{% block content %}
+<div class="container cart-page">
+    <h1>Your Shopping Cart</h1>
+
+    {% if cart['items'] %}
+        <div class="cart-grid">
+            <div class="cart-items-col">
+                <!-- Smart Insights Box -->
+                {% if cart.intelligence.insights %}
+                    <div class="cart-insights-box">
+                        <div class="insight-header"><i data-lucide="sparkles"></i> <strong>Smart Cart Intelligence</strong></div>
+                        {% for ins in cart.intelligence.insights %}
+                            <div class="insight-item">
+                                <i data-lucide="info"></i>
+                                <span>{{ ins.message }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Items List -->
+                <div class="cart-items-list">
+                    {% for item in cart['items'] %}
+                        <div class="cart-item-row" id="cart-item-{{ item.id }}">
+                            <img src="{{ item.product.primary_image_url }}" alt="{{ item.product.title }}" class="cart-item-img">
+                            <div class="cart-item-details">
+                                <h3><a href="{{ url_for('product_views.product_detail', slug=item.product.slug) }}">{{ item.product.title }}</a></h3>
+                                <span class="cart-item-unit-price">{{ item.unit_price|currency }}</span>
+                            </div>
+                            <div class="cart-item-qty">
+                                <input type="number" class="form-control qty-input" value="{{ item.quantity }}" min="1" max="10" onchange="ShopSenseCart.update({{ item.id }}, this.value)">
+                            </div>
+                            <div class="cart-item-total">
+                                <span>{{ item.total_price|currency }}</span>
+                            </div>
+                            <button class="btn-remove-item" onclick="ShopSenseCart.remove({{ item.id }})" title="Remove item">&times;</button>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="cart-summary-col">
+                <div class="summary-card">
+                    <h3>Order Summary</h3>
+                    <div class="summary-row">
+                        <span>Subtotal ({{ cart.total_items_count }} items)</span>
+                        <span>{{ cart.subtotal_amount|currency }}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Shipping</span>
+                        <span>{% if cart.intelligence.free_shipping_eligible %}FREE{% else %}₹99.00{% endif %}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Estimated Tax (18% GST)</span>
+                        <span>{{ (cart.subtotal_amount * 0.18)|currency }}</span>
+                    </div>
+                    <hr>
+                    <div class="summary-row total-row">
+                        <strong>Total Amount</strong>
+                        <strong>{{ (cart.subtotal_amount * 1.18)|currency }}</strong>
+                    </div>
+
+                    <a href="{{ url_for('order_views.checkout_page') }}" class="btn btn-primary btn-block btn-lg btn-checkout">
+                        <i data-lucide="shield-check"></i> Proceed to Simulated Checkout
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <i data-lucide="shopping-cart" class="empty-icon"></i>
+            <h3>Your cart is empty</h3>
+            <p>Explore our AI recommendations and catalog to add products.</p>
+            <a href="{{ url_for('product_views.product_list') }}" class="btn btn-primary">Start Shopping</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

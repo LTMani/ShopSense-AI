@@ -1,0 +1,56 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}AI Shopping Copilot — ShopSense AI{% endblock %}
+
+{% block content %}
+<div class="container copilot-page-layout">
+    <!-- Conversation Sidebar -->
+    <aside class="copilot-sidebar">
+        <div class="sidebar-top">
+            <button class="btn btn-primary btn-block" onclick="ShopSenseCopilot.newSession()">
+                <i data-lucide="plus"></i> New Shopping Session
+            </button>
+        </div>
+        <div class="sessions-list">
+            <h4>Recent Sessions</h4>
+            {% for conv in conversations %}
+                <div class="session-item" onclick="ShopSenseCopilot.loadSession({{ conv.id }})">
+                    <i data-lucide="message-square"></i>
+                    <span>{{ conv.session_title }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    </aside>
+
+    <!-- Main Chat Workspace -->
+    <div class="copilot-chat-workspace">
+        <div class="chat-header">
+            <div class="copilot-brand-badge">
+                <i data-lucide="bot"></i>
+                <div>
+                    <h3>ShopSense AI Shopping Copilot</h3>
+                    <p>Natural-language requirements, adaptive ranking, and grounded explanations</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Stream Area -->
+        <div class="chat-stream" id="chat-stream">
+            <div class="chat-bubble bot">
+                <div class="bot-avatar"><i data-lucide="bot"></i></div>
+                <div class="bubble-content">
+                    <p>Hello! I am your AI Shopping Copilot. Tell me what you're looking for, your budget ceiling, and key usage priorities (e.g. <em>"I need a laptop under ₹60,000 for coding, occasional gaming, and long battery life"</em>).</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Bar -->
+        <div class="chat-input-bar">
+            <form id="copilot-form" onsubmit="ShopSenseCopilot.sendMessage(event)">
+                <input type="text" id="copilot-input" class="form-control" placeholder="Describe your shopping requirements or refine: 'Battery matters more than gaming'..." autofocus>
+                <button type="submit" class="btn btn-primary" id="btn-send-copilot"><i data-lucide="send"></i></button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

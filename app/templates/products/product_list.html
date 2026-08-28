@@ -1,0 +1,65 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Product Catalog — ShopSense AI{% endblock %}
+
+{% block content %}
+<div class="container catalog-page">
+    <div class="catalog-header">
+        <div>
+            <h1>Product Marketplace</h1>
+            <p>Showing {{ total }} verified catalog products with real-time stock levels</p>
+        </div>
+        <div class="catalog-sort">
+            <label for="sort-select">Sort by:</label>
+            <select id="sort-select" class="form-control select-inline" onchange="location = this.value;">
+                <option value="{{ url_for('product_views.product_list', sort='relevance') }}" {% if sort_by == 'relevance' %}selected{% endif %}>AI Relevance</option>
+                <option value="{{ url_for('product_views.product_list', sort='price_asc') }}" {% if sort_by == 'price_asc' %}selected{% endif %}>Price: Low to High</option>
+                <option value="{{ url_for('product_views.product_list', sort='price_desc') }}" {% if sort_by == 'price_desc' %}selected{% endif %}>Price: High to Low</option>
+                <option value="{{ url_for('product_views.product_list', sort='rating') }}" {% if sort_by == 'rating' %}selected{% endif %}>Highest Rated</option>
+                <option value="{{ url_for('product_views.product_list', sort='popularity') }}" {% if sort_by == 'popularity' %}selected{% endif %}>Popularity</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="catalog-layout">
+        <!-- Filter Sidebar -->
+        <aside class="catalog-sidebar">
+            <div class="filter-card">
+                <h3>Categories</h3>
+                <ul class="filter-list">
+                    <li><a href="{{ url_for('product_views.product_list') }}" class="{% if not selected_category %}active{% endif %}">All Categories</a></li>
+                    {% for cat in categories %}
+                        <li>
+                            <a href="{{ url_for('product_views.product_list', category=cat.id) }}" class="{% if selected_category == cat.id %}active{% endif %}">
+                                <i data-lucide="{{ cat.icon_name }}"></i> {{ cat.name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Product Grid -->
+        <div class="catalog-main">
+            <div class="products-grid">
+                {% for product in products %}
+                    {% include 'components/product_card.html' %}
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if pages > 1 %}
+                <div class="pagination">
+                    {% if page > 1 %}
+                        <a href="{{ url_for('product_views.product_list', page=page-1, category=selected_category, sort=sort_by) }}" class="btn btn-outline btn-sm">&larr; Previous</a>
+                    {% endif %}
+                    <span class="pagination-info">Page {{ page }} of {{ pages }}</span>
+                    {% if page < pages %}
+                        <a href="{{ url_for('product_views.product_list', page=page+1, category=selected_category, sort=sort_by) }}" class="btn btn-outline btn-sm">Next &rarr;</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

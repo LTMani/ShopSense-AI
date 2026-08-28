@@ -1,0 +1,75 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Customer Dashboard — ShopSense AI{% endblock %}
+
+{% block content %}
+<div class="container customer-dashboard">
+    <div class="dashboard-hero">
+        <div class="welcome-col">
+            <h1>Welcome, {{ current_user.first_name }}!</h1>
+            <p>Your personalized shopping hub powered by ShopSense AI</p>
+        </div>
+        <div class="quick-copilot-cta">
+            <a href="{{ url_for('copilot_views.copilot_page') }}" class="btn btn-primary">
+                <i data-lucide="bot"></i> Open AI Shopping Copilot
+            </a>
+        </div>
+    </div>
+
+    <!-- Recent Orders & Wishlist -->
+    <div class="dashboard-grid">
+        <div class="dash-card">
+            <div class="dash-card-header">
+                <h3><i data-lucide="package"></i> Recent Orders</h3>
+                <a href="{{ url_for('order_views.orders_list') }}" class="btn-link">View All</a>
+            </div>
+            {% if orders %}
+                <ul class="dash-list">
+                    {% for order in orders %}
+                        <li class="dash-list-item">
+                            <div>
+                                <strong>Order #{{ order.order_number }}</strong>
+                                <span class="text-muted">{{ order.created_at|dateformat }}</span>
+                            </div>
+                            <span class="badge badge-{{ order.status }}">{{ order.status|capitalize }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted">No orders placed yet.</p>
+            {% endif %}
+        </div>
+
+        <div class="dash-card">
+            <div class="dash-card-header">
+                <h3><i data-lucide="heart"></i> Saved in Wishlist ({{ wishlist.items.count() }})</h3>
+                <a href="{{ url_for('wishlist_views.wishlist_page') }}" class="btn-link">View Wishlist</a>
+            </div>
+            {% if wishlist and wishlist.items.count() > 0 %}
+                <ul class="dash-list">
+                    {% for item in wishlist.items.all()[:3] %}
+                        <li class="dash-list-item">
+                            <span>{{ item.product.title[:35] }}...</span>
+                            <strong>{{ item.current_price|currency }}</strong>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted">Your wishlist is currently empty.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Recommended for You -->
+    <section class="section">
+        <h2>Recommended For You</h2>
+        <div class="products-grid">
+            {% for item in recommendations %}
+                {% with product = item.product %}
+                    {% include 'components/product_card.html' %}
+                {% endwith %}
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}

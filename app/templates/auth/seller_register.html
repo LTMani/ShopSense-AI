@@ -1,0 +1,57 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Merchant Store Registration — ShopSense AI{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card auth-card-wide">
+        <div class="auth-header">
+            <div class="auth-icon"><i data-lucide="store"></i></div>
+            <h2>Register Seller Store</h2>
+            <p>Launch your storefront with demand forecasting, inventory alerts, and Seller AI Copilot</p>
+        </div>
+
+        <form action="{{ url_for('auth_views.seller_register') }}" method="POST" class="auth-form">
+            <div class="form-group">
+                <label for="business_name">Store / Business Name</label>
+                <input type="text" id="business_name" name="business_name" class="form-control" placeholder="Apex Tech Innovations" required>
+            </div>
+
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label for="first_name">Owner First Name</label>
+                    <input type="text" id="first_name" name="first_name" class="form-control" placeholder="Vikram" required>
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Owner Last Name</label>
+                    <input type="text" id="last_name" name="last_name" class="form-control" placeholder="Menon" required>
+                </div>
+            </div>
+
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label for="email">Business Email</label>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="partner@apextech.in" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Business Contact Phone</label>
+                    <input type="tel" id="phone" name="phone" class="form-control" placeholder="+91 98450 12345">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Account Password</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" minlength="6" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block btn-lg">
+                <i data-lucide="store"></i> Register & Launch Seller Portal
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Already a registered merchant? <a href="{{ url_for('auth_views.login') }}">Seller Login</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

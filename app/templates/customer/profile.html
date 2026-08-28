@@ -1,0 +1,16 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}My Profile — ShopSense AI{% endblock %}
+
+{% block content %}
+<div class="container profile-page">
+    <h1>Account Profile</h1>
+    <div class="card profile-card">
+        <h3>Personal Details</h3>
+        <p><strong>Name:</strong> {{ user.full_name }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Account Type:</strong> {{ user.role.display_name }}</p>
+        <p><strong>Member Since:</strong> {{ user.created_at|dateformat }}</p>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'layouts/seller_base.html' %}
+
+{% block page_title %}Inventory Intelligence & Reordering{% endblock %}
+{% block page_subtitle %}Safety stock thresholds, days of supply, and stockout risk mitigation{% endblock %}
+
+{% block content %}
+<div class="inventory-kpi-row">
+    <div class="kpi-pill">Total SKUs: <strong>{{ inventory.total_sku_count }}</strong></div>
+    <div class="kpi-pill">Units on Hand: <strong>{{ inventory.total_units_on_hand }}</strong></div>
+    <div class="kpi-pill warning">Low Stock: <strong>{{ inventory.low_stock_count }}</strong></div>
+    <div class="kpi-pill danger">Out of Stock: <strong>{{ inventory.out_of_stock_count }}</strong></div>
+    <div class="kpi-pill dead">Dead Stock SKUs: <strong>{{ inventory.dead_stock_count }}</strong></div>
+</div>
+
+<div class="seller-card">
+    <h3>Inventory Level Ledger</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Available</th>
+                <th>Safety Stock</th>
+                <th>Reorder Point</th>
+                <th>Days of Supply</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in inventory.inventory_items %}
+                <tr>
+                    <td><strong>{{ item.product_title }}</strong> <br><small class="text-muted">{{ item.product_sku }}</small></td>
+                    <td><strong>{{ item.available_quantity }}</strong> units</td>
+                    <td>{{ item.safety_stock }}</td>
+                    <td>{{ item.reorder_point }}</td>
+                    <td>{{ item.days_of_supply }} days</td>
+                    <td>
+                        <span class="badge badge-{{ item.stock_status }}">{{ item.stock_status|capitalize }}</span>
+                    </td>
+                    <td>
+                        <button class="btn btn-outline btn-xs" onclick="ShopSenseSeller.restock({{ item.id }}, '{{ item.product_title }}')">Restock +50</button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

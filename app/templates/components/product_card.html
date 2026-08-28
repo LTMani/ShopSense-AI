@@ -1,0 +1,50 @@
+<div class="product-card" data-product-id="{{ product.id }}">
+    <div class="product-card-header">
+        {% if product.discount_percentage and product.discount_percentage > 0 %}
+            <span class="badge badge-sale">-{{ product.discount_percentage|int }}%</span>
+        {% elif product.is_featured %}
+            <span class="badge badge-featured">Featured</span>
+        {% endif %}
+
+        <button class="btn-wishlist-toggle {% if product.is_wishlisted %}active{% endif %}" onclick="ShopSenseWishlist.toggle({{ product.id }}, this)" title="Add to Wishlist">
+            <i data-lucide="heart"></i>
+        </button>
+    </div>
+
+    <a href="{{ url_for('product_views.product_detail', slug=product.slug) }}" class="product-img-container">
+        <img src="{{ product.primary_image_url }}" alt="{{ product.title }}" class="product-image" loading="lazy">
+    </a>
+
+    <div class="product-card-body">
+        <div class="product-brand-category">
+            <span class="product-brand">{{ product.brand }}</span>
+            <span class="product-category-tag">{{ product.category_name }}</span>
+        </div>
+
+        <h3 class="product-title">
+            <a href="{{ url_for('product_views.product_detail', slug=product.slug) }}" title="{{ product.title }}">{{ product.title }}</a>
+        </h3>
+
+        <div class="product-rating">
+            <div class="stars-outer">
+                <i data-lucide="star" class="star-icon filled"></i>
+                <span class="rating-val">{{ product.average_rating }}</span>
+                <span class="reviews-count">({{ product.total_reviews_count }})</span>
+            </div>
+        </div>
+
+        <p class="product-short-desc">{{ product.short_description[:90] }}...</p>
+
+        <div class="product-price-row">
+            <div class="price-box">
+                <span class="current-price">{{ product.current_price|currency }}</span>
+                {% if product.sale_price and product.sale_price < product.base_price %}
+                    <span class="original-price">{{ product.base_price|currency }}</span>
+                {% endif %}
+            </div>
+            <button class="btn btn-primary btn-sm btn-add-cart" onclick="ShopSenseCart.add({{ product.id }}, 1)" title="Add to Cart">
+                <i data-lucide="plus"></i> Add
+            </button>
+        </div>
+    </div>
+</div>

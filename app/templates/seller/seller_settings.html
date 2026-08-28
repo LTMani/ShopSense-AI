@@ -1,0 +1,14 @@
+{% extends 'layouts/seller_base.html' %}
+
+{% block page_title %}Store Configuration & Settings{% endblock %}
+{% block page_subtitle %}Manage merchant credentials, notifications, and commission rates{% endblock %}
+
+{% block content %}
+<div class="seller-card">
+    <h3>Merchant Store Profile</h3>
+    <p><strong>Business Name:</strong> {{ current_user.seller_profile.business_name if current_user.seller_profile else 'Apex Tech' }}</p>
+    <p><strong>Store Slug:</strong> <code>{{ current_user.seller_profile.store_slug if current_user.seller_profile else 'apex-tech' }}</code></p>
+    <p><strong>Platform Commission Rate:</strong> 8.0%</p>
+    <p><strong>Merchant Status:</strong> <span class="badge badge-success">Verified Merchant</span></p>
+</div>
+{% endblock %}

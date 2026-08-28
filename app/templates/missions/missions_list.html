@@ -1,0 +1,44 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Shopping Missions — ShopSense AI{% endblock %}
+
+{% block content %}
+<div class="container missions-page">
+    <div class="missions-hero">
+        <div class="badge badge-accent"><i data-lucide="compass"></i> Multi-Product Basket Goal Solver</div>
+        <h1>Shopping Missions</h1>
+        <p>Set a goal and total budget ceiling (e.g. <em>"Build college study setup under ₹30,000"</em>). Our constraint optimizer allocates budget slots and selects compatible, highly rated items.</p>
+    </div>
+
+    <!-- Mission Builder Form Card -->
+    <div class="mission-builder-card">
+        <h3>Launch a New Shopping Mission</h3>
+        <form onsubmit="ShopSenseMissions.build(event)">
+            <div class="form-group">
+                <label for="mission-prompt">What are you trying to assemble?</label>
+                <input type="text" id="mission-prompt" class="form-control" placeholder="e.g., Complete college study setup with laptop, monitor, and desk chair" required>
+            </div>
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label for="mission-budget">Total Maximum Budget (₹)</label>
+                    <input type="number" id="mission-budget" class="form-control" value="30000" min="1000" max="500000" step="500" required>
+                </div>
+                <div class="form-group">
+                    <label for="mission-mode">Optimization Strategy</label>
+                    <select id="mission-mode" class="form-control">
+                        <option value="balanced">Balanced Value & Quality</option>
+                        <option value="performance_first">Prioritize Maximum Performance</option>
+                        <option value="budget_saver">Maximize Budget Savings</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg" id="btn-build-mission">
+                <i data-lucide="sparkles"></i> Generate Optimized Basket
+            </button>
+        </form>
+    </div>
+
+    <!-- Result Basket Display Area -->
+    <div id="mission-result-area"></div>
+</div>
+{% endblock %}

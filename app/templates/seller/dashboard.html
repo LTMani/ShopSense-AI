@@ -1,0 +1,115 @@
+{% extends 'layouts/seller_base.html' %}
+
+{% block page_title %}Executive Seller Overview{% endblock %}
+{% block page_subtitle %}Live metrics dynamically computed from customer database transactions{% endblock %}
+
+{% block content %}
+<!-- Top KPI Cards -->
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div class="kpi-icon-box rev"><i data-lucide="indian-rupee"></i></div>
+        <div class="kpi-details">
+            <span class="kpi-label">Total Net Revenue</span>
+            <h3 class="kpi-value">{{ kpis.total_revenue|currency }}</h3>
+            <span class="kpi-subtext positive"><i data-lucide="trending-up"></i> Active commercial transactions</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="kpi-icon-box profit"><i data-lucide="wallet"></i></div>
+        <div class="kpi-details">
+            <span class="kpi-label">Gross Margin / Profit</span>
+            <h3 class="kpi-value">{{ kpis.total_profit|currency }}</h3>
+            <span class="kpi-subtext">Estimated acquisition margin</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="kpi-icon-box orders"><i data-lucide="shopping-bag"></i></div>
+        <div class="kpi-details">
+            <span class="kpi-label">Total Units Sold</span>
+            <h3 class="kpi-value">{{ kpis.units_sold }}</h3>
+            <span class="kpi-subtext">AOV: {{ kpis.average_order_value|currency }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="kpi-icon-box inv"><i data-lucide="boxes"></i></div>
+        <div class="kpi-details">
+            <span class="kpi-label">Total Units on Hand</span>
+            <h3 class="kpi-value">{{ inventory.total_units_on_hand }}</h3>
+            <span class="kpi-subtext {% if inventory.low_stock_count > 0 %}warning{% endif %}">
+                {{ inventory.low_stock_count }} items near reorder threshold
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- Active Inventory Alerts Banner if present -->
+{% if inventory.active_alerts %}
+    <div class="alert-banner-box">
+        <div class="alert-banner-header">
+            <i data-lucide="alert-triangle"></i>
+            <h4>Active AI Inventory Risk Alerts ({{ inventory.active_alerts|length }})</h4>
+        </div>
+        <div class="alert-pills-list">
+            {% for alert in inventory.active_alerts[:3] %}
+                <div class="alert-pill-item severity-{{ alert.severity }}">
+                    <strong>{{ alert.title }}:</strong> {{ alert.message }}
+                    <span class="action-tag">&rarr; {{ alert.action_recommended }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+
+<!-- Revenue Trend & Recent Orders Grid -->
+<div class="seller-split-grid">
+    <div class="seller-card">
+        <div class="card-header-row">
+            <h3>30-Day Revenue Trend (Dynamic)</h3>
+            <span class="badge badge-outline">Daily Aggregation</span>
+        </div>
+        <!-- Pure CSS/SVG Bar Chart Visualization -->
+        <div class="trend-bars-container">
+            {% for pt in kpis.revenue_trend %}
+                <div class="trend-bar-wrapper" title="{{ pt.date }}: {{ pt.revenue|currency }}">
+                    <div class="trend-bar-fill" style="height: {{ (pt.revenue / 200000.0 * 100)|int }}%;"></div>
+                    <span class="trend-bar-label">{{ pt.date[-2:] }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="seller-card">
+        <div class="card-header-row">
+            <h3>Recent Store Orders</h3>
+            <a href="{{ url_for('seller_views.analytics') }}" class="btn-link">View Analytics</a>
+        </div>
+        <div class="orders-table-wrapper">
+            <table class="table table-compact">
+                <thead>
+                    <tr>
+                        <th>Order #</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ord in recent_orders %}
+                        <tr>
+                            <td><strong>{{ ord.order_number }}</strong></td>
+                            <td>{{ ord.total_amount|currency }}</td>
+                            <td><span class="badge badge-{{ ord.status }}">{{ ord.status|capitalize }}</span></td>
+                            <td>{{ ord.created_at|dateformat }}</td>
+                        </tr>
+                    {% else %}
+                        <tr><td colspan="4" class="text-muted">No recent orders.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

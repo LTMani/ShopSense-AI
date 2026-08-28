@@ -1,0 +1,51 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Order #{{ order.order_number }} — ShopSense AI{% endblock %}
+
+{% block content %}
+<div class="container order-detail-page">
+    <div class="order-header-box">
+        <div class="badge badge-success"><i data-lucide="check-circle"></i> Confirmed Order</div>
+        <h1>Order #{{ order.order_number }}</h1>
+        <p>Placed on {{ order.created_at|dateformat }} &bull; Status: <strong class="badge-{{ order.status }}">{{ order.status|capitalize }}</strong></p>
+    </div>
+
+    <div class="order-detail-grid">
+        <div class="order-items-col">
+            <div class="card">
+                <h3>Items in Order</h3>
+                <div class="order-lines-list">
+                    {% for item in order.items %}
+                        <div class="order-line-row">
+                            <div>
+                                <h4>{{ item.product_title }}</h4>
+                                <span class="sku-label">SKU: {{ item.product_sku }}</span>
+                            </div>
+                            <div class="order-line-qty">Qty: {{ item.quantity }}</div>
+                            <div class="order-line-price">{{ item.total_price|currency }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="order-info-col">
+            <div class="card">
+                <h3>Delivery Address</h3>
+                <p><strong>{{ order.shipping_address.name }}</strong></p>
+                <p>{{ order.shipping_address.line1 }}</p>
+                <p>{{ order.shipping_address.city }}, {{ order.shipping_address.state }} - {{ order.shipping_address.postal_code }}</p>
+            </div>
+
+            <div class="card">
+                <h3>Payment Summary</h3>
+                <div class="summary-row"><span>Subtotal:</span><span>{{ order.subtotal_amount|currency }}</span></div>
+                <div class="summary-row"><span>GST (18%):</span><span>{{ order.tax_amount|currency }}</span></div>
+                <div class="summary-row"><span>Shipping:</span><span>{{ order.shipping_fee|currency }}</span></div>
+                <hr>
+                <div class="summary-row total-row"><strong>Total Paid:</strong><strong>{{ order.total_amount|currency }}</strong></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

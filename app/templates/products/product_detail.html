@@ -1,0 +1,107 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}{{ product.title }} — ShopSense AI{% endblock %}
+
+{% block content %}
+<div class="container product-detail-container">
+    <div class="product-detail-grid">
+        <!-- Gallery -->
+        <div class="product-gallery">
+            <div class="main-image-box">
+                <img src="{{ product.primary_image_url }}" alt="{{ product.title }}" class="main-prod-img" id="main-image">
+            </div>
+        </div>
+
+        <!-- Info & Actions -->
+        <div class="product-info-col">
+            <div class="product-brand-badge">{{ product.brand }}</div>
+            <h1 class="product-detail-title">{{ product.title }}</h1>
+            
+            <div class="product-detail-rating">
+                <span class="stars-score"><i data-lucide="star" class="star-icon filled"></i> {{ product.average_rating }}</span>
+                <a href="{{ url_for('review_views.reviews_page', slug=product.slug) }}" class="review-link">({{ product.total_reviews_count }} verified buyer reviews & sentiment report)</a>
+            </div>
+
+            <div class="product-detail-price-box">
+                <span class="detail-current-price">{{ product.current_price|currency }}</span>
+                {% if product.sale_price and product.sale_price < product.base_price %}
+                    <span class="detail-base-price">{{ product.base_price|currency }}</span>
+                    <span class="badge badge-sale">Save {{ product.discount_percentage|int }}%</span>
+                {% endif %}
+            </div>
+
+            <p class="product-detail-desc">{{ product.description }}</p>
+
+            <div class="product-specs-highlights">
+                <h4>Key Technical Specifications:</h4>
+                <ul class="specs-bullet-list">
+                    {% for feat in product.key_features %}
+                        <li><i data-lucide="check" class="check-icon"></i> {{ feat }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- Aspect Sentiment Meter -->
+            <div class="aspect-sentiment-box">
+                <h4>Aspect Sentiment Breakdown:</h4>
+                <div class="aspect-bars">
+                    {% for aspect, score in product.aspect_sentiments.items() %}
+                        <div class="aspect-bar-row">
+                            <span class="aspect-name">{{ aspect|capitalize }}</span>
+                            <div class="progress-bar-track">
+                                <div class="progress-bar-fill {% if score >= 85 %}good{% elif score >= 70 %}moderate{% else %}low{% endif %}" style="width: {{ score }}%;"></div>
+                            </div>
+                            <span class="aspect-score">{{ score }}% Positive</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="product-actions-row">
+                <button class="btn btn-primary btn-lg" onclick="ShopSenseCart.add({{ product.id }}, 1)">
+                    <i data-lucide="shopping-cart"></i> Add to Cart
+                </button>
+                <a href="{{ url_for('comparison_views.compare_page', ids=product.id) }}" class="btn btn-outline btn-lg">
+                    <i data-lucide="scale"></i> Add to Compare
+                </a>
+                <button class="btn btn-ghost btn-lg" onclick="ShopSenseWishlist.toggle({{ product.id }}, this)">
+                    <i data-lucide="heart"></i> Save
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Smart Alternatives Section -->
+    {% if smart_alternatives.budget_alternatives or smart_alternatives.premium_upgrades %}
+        <section class="section smart-alternatives-section">
+            <h2>Smart Alternatives & Recommendations</h2>
+            <div class="alternatives-grid">
+                {% for alt in smart_alternatives.budget_alternatives %}
+                    <div class="alternative-card budget-alt">
+                        <span class="alt-tag badge-sale">Budget Saver Option</span>
+                        <h4>{{ alt.product.title }}</h4>
+                        <p class="alt-reason">{{ alt.explanation }}</p>
+                        <div class="alt-price-row">
+                            <span class="alt-price">{{ alt.product.current_price|currency }}</span>
+                            <a href="{{ url_for('product_views.product_detail', slug=alt.product.slug) }}" class="btn btn-outline btn-sm">View Item</a>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                {% for alt in smart_alternatives.premium_upgrades %}
+                    <div class="alternative-card premium-alt">
+                        <span class="alt-tag badge-accent">Performance Upgrade</span>
+                        <h4>{{ alt.product.title }}</h4>
+                        <p class="alt-reason">{{ alt.explanation }}</p>
+                        <div class="alt-price-row">
+                            <span class="alt-price">{{ alt.product.current_price|currency }}</span>
+                            <a href="{{ url_for('product_views.product_detail', slug=alt.product.slug) }}" class="btn btn-outline btn-sm">View Item</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+</div>
+{% endblock %}

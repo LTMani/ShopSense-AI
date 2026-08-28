@@ -1,0 +1,31 @@
+{% extends 'layouts/seller_base.html' %}
+
+{% block page_title %}Seller AI Diagnostic Copilot{% endblock %}
+{% block page_subtitle %}Ask root-cause business questions grounded in actual store metrics{% endblock %}
+
+{% block content %}
+<div class="seller-copilot-workspace">
+    <div class="seller-copilot-suggestions">
+        <span>Suggested questions:</span>
+        <button class="btn btn-outline btn-xs" onclick="ShopSenseSellerCopilot.ask('Why did my sales decrease this month?')">Why did my sales decrease this month?</button>
+        <button class="btn btn-outline btn-xs" onclick="ShopSenseSellerCopilot.ask('Which items are at risk of stockout within 10 days?')">Which items are at risk of stockout?</button>
+        <button class="btn btn-outline btn-xs" onclick="ShopSenseSellerCopilot.ask('How can I optimize pricing for slow moving inventory?')">How to optimize slow inventory?</button>
+    </div>
+
+    <div class="seller-chat-stream" id="seller-chat-stream">
+        <div class="chat-bubble bot">
+            <div class="bot-avatar"><i data-lucide="bot"></i></div>
+            <div class="bubble-content">
+                <p>Welcome to <strong>Seller AI Copilot</strong>. I analyze your real inventory levels, conversion funnels, review sentiments, and transaction history to diagnose business performance.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-input-bar">
+        <form onsubmit="ShopSenseSellerCopilot.send(event)">
+            <input type="text" id="seller-copilot-input" class="form-control" placeholder="Ask a diagnostic question (e.g., 'Why are headphones revenue dropping?')..." required>
+            <button type="submit" class="btn btn-primary"><i data-lucide="send"></i></button>
+        </form>
+    </div>
+</div>
+{% endblock %}

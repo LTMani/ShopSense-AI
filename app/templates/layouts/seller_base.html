@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Seller Intelligence Portal — ShopSense AI{% endblock %}</title>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base/variables.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base/reset.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base/typography.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components/buttons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components/cards.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components/badges.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components/forms.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components/tables.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components/modals.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/seller/seller_portal.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="seller-portal-layout">
+    <!-- Seller Sidebar Navigation -->
+    <aside class="seller-sidebar">
+        <div class="sidebar-header">
+            <a href="{{ url_for('seller_views.dashboard') }}" class="seller-brand">
+                <i data-lucide="sparkles" class="brand-icon"></i>
+                <div class="brand-titles">
+                    <span class="seller-brand-name">ShopSense</span>
+                    <span class="seller-brand-badge">SELLER AI</span>
+                </div>
+            </a>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section-label">Core Business</div>
+            <a href="{{ url_for('seller_views.dashboard') }}" class="sidebar-link {% if request.endpoint == 'seller_views.dashboard' %}active{% endif %}">
+                <i data-lucide="layout-dashboard"></i>
+                <span>Executive Overview</span>
+            </a>
+            <a href="{{ url_for('seller_views.products') }}" class="sidebar-link {% if request.endpoint == 'seller_views.products' %}active{% endif %}">
+                <i data-lucide="package"></i>
+                <span>Product Catalog</span>
+            </a>
+            <a href="{{ url_for('seller_views.inventory') }}" class="sidebar-link {% if request.endpoint == 'seller_views.inventory' %}active{% endif %}">
+                <i data-lucide="boxes"></i>
+                <span>Inventory Intelligence</span>
+            </a>
+
+            <div class="nav-section-label">AI & Analytics</div>
+            <a href="{{ url_for('seller_views.analytics') }}" class="sidebar-link {% if request.endpoint == 'seller_views.analytics' %}active{% endif %}">
+                <i data-lucide="bar-chart-3"></i>
+                <span>Sales & Funnels</span>
+            </a>
+            <a href="{{ url_for('seller_views.forecasting') }}" class="sidebar-link {% if request.endpoint == 'seller_views.forecasting' %}active{% endif %}">
+                <i data-lucide="trending-up"></i>
+                <span>Demand Forecasting</span>
+            </a>
+            <a href="{{ url_for('seller_views.pricing') }}" class="sidebar-link {% if request.endpoint == 'seller_views.pricing' %}active{% endif %}">
+                <i data-lucide="tag"></i>
+                <span>Pricing Intelligence</span>
+            </a>
+            <a href="{{ url_for('seller_views.customers') }}" class="sidebar-link {% if request.endpoint == 'seller_views.customers' %}active{% endif %}">
+                <i data-lucide="users"></i>
+                <span>Customer Segments</span>
+            </a>
+            <a href="{{ url_for('seller_views.seller_copilot') }}" class="sidebar-link {% if request.endpoint == 'seller_views.seller_copilot' %}active{% endif %} highlight-copilot">
+                <i data-lucide="bot"></i>
+                <span>Seller AI Copilot</span>
+            </a>
+
+            <div class="nav-section-label">Store Settings</div>
+            <a href="{{ url_for('seller_views.seller_settings') }}" class="sidebar-link {% if request.endpoint == 'seller_views.seller_settings' %}active{% endif %}">
+                <i data-lucide="settings"></i>
+                <span>Store Configuration</span>
+            </a>
+            <a href="{{ url_for('system_views.landing_page') }}" class="sidebar-link">
+                <i data-lucide="external-link"></i>
+                <span>Customer Marketplace</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="seller-profile-card">
+                <div class="seller-avatar">{{ current_user.first_name[0] }}</div>
+                <div class="seller-meta">
+                    <span class="seller-name">{{ current_user.seller_profile.business_name if current_user.seller_profile else current_user.first_name }}</span>
+                    <span class="seller-verified"><i data-lucide="badge-check"></i> Verified Merchant</span>
+                </div>
+            </div>
+            <a href="{{ url_for('auth_views.logout') }}" class="btn btn-ghost btn-sm btn-logout" title="Log Out"><i data-lucide="log-out"></i></a>
+        </div>
+    </aside>
+
+    <!-- Main Seller Workspace Area -->
+    <div class="seller-workspace">
+        <header class="seller-topbar">
+            <div class="topbar-title">
+                <h2>{% block page_title %}Dashboard{% endblock %}</h2>
+                <p class="topbar-subtitle">{% block page_subtitle %}Real-time commercial intelligence powered by database transactions.{% endblock %}</p>
+            </div>
+            <div class="topbar-actions">
+                <span class="status-indicator online">System Live</span>
+                <a href="{{ url_for('seller_views.seller_copilot') }}" class="btn btn-primary btn-sm"><i data-lucide="bot"></i> Ask Seller Copilot</a>
+            </div>
+        </header>
+
+        <div class="seller-container">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/core/api_client.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/core/toast.js') }}"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

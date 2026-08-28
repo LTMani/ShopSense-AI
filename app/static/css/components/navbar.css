@@ -1,0 +1,125 @@
+.top-bar {
+    background-color: #0f172a;
+    color: #94a3b8;
+    font-size: 0.8125rem;
+    padding: 0.35rem 0;
+}
+
+.top-bar-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.top-bar-right {
+    display: flex;
+    gap: 1.25rem;
+}
+
+.top-bar-link {
+    color: #cbd5e1;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.top-bar-link:hover { color: #fff; }
+
+.main-navbar {
+    background-color: var(--bg-surface);
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.75rem 0;
+    z-index: 100;
+}
+
+.sticky { position: sticky; top: 0; }
+
+.navbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+.brand-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.brand-ai { color: var(--primary); margin-left: 0.15rem; }
+
+.nav-search-form {
+    flex: 1;
+    max-width: 540px;
+}
+
+.search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-icon {
+    position: absolute;
+    left: 0.85rem;
+    color: var(--text-muted);
+    width: 18px;
+    height: 18px;
+}
+
+.nav-search-input {
+    width: 100%;
+    padding: 0.6rem 3rem 0.6rem 2.4rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-full);
+    font-size: 0.875rem;
+    background-color: var(--bg-subtle);
+    transition: var(--transition);
+}
+
+.nav-search-input:focus {
+    background-color: #fff;
+    outline: none;
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+.btn-search {
+    position: absolute;
+    right: 3px;
+    border-radius: var(--radius-full);
+    padding: 0.35rem 0.75rem;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.nav-icon-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-weight: 500;
+    position: relative;
+}
+
+.nav-icon-btn:hover { color: var(--primary); }

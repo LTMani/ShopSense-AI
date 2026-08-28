@@ -1,0 +1,131 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}ShopSense AI — Intelligent Shopping & Seller Intelligence Platform{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container hero-grid">
+        <div class="hero-text-col">
+            <div class="badge badge-hero"><i data-lucide="sparkles"></i> Next-Gen E-Commerce Platform</div>
+            <h1 class="hero-title">Shop Smarter. <br><span class="gradient-text">Sell Smarter.</span></h1>
+            <p class="hero-description">
+                Experience natural-language conversational shopping, explainable product recommendations, 
+                aspect-based review intelligence, and enterprise-grade seller demand forecasting.
+            </p>
+            
+            <div class="hero-actions">
+                <a href="{{ url_for('copilot_views.copilot_page') }}" class="btn btn-primary btn-lg">
+                    <i data-lucide="bot"></i> Open AI Shopping Copilot
+                </a>
+                <a href="{{ url_for('product_views.product_list') }}" class="btn btn-outline btn-lg">
+                    <i data-lucide="grid"></i> Explore Catalog
+                </a>
+            </div>
+
+            <!-- Natural Language Query Samples -->
+            <div class="copilot-query-chips">
+                <span class="chips-label">Try asking:</span>
+                <a href="{{ url_for('search_views.search', q='laptop for coding under 60000 lightweight') }}" class="query-chip">"Coding laptop under ₹60,000 lightweight"</a>
+                <a href="{{ url_for('search_views.search', q='wireless headphones with anc and great battery') }}" class="query-chip">"ANC headphones with 30hr battery"</a>
+                <a href="{{ url_for('mission_views.missions_list') }}" class="query-chip">"Build college study setup for ₹30,000"</a>
+            </div>
+        </div>
+
+        <div class="hero-visual-col">
+            <div class="copilot-preview-card">
+                <div class="preview-header">
+                    <div class="copilot-avatar"><i data-lucide="bot"></i></div>
+                    <div class="copilot-info">
+                        <strong>ShopSense AI Copilot</strong>
+                        <span class="status-online">Online & Ready</span>
+                    </div>
+                </div>
+                <div class="preview-dialogue">
+                    <div class="dialogue-msg user-msg">
+                        <p>I need a laptop under ₹60,000 for coding, occasional gaming, and long battery life.</p>
+                    </div>
+                    <div class="dialogue-msg bot-msg">
+                        <div class="extracted-pill-row">
+                            <span class="pill">Category: Laptops</span>
+                            <span class="pill">Budget: ₹60,000</span>
+                            <span class="pill">Priority: Battery & RAM</span>
+                        </div>
+                        <p>I found the <strong>ThinkPad E14 Gen 5 AMD</strong> (94% Match Score). Fits your ₹56,999 budget, features 8-Core Ryzen 7, 16GB RAM, and 10+ hours battery life.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Category Showcase -->
+<section class="section categories-section">
+    <div class="container">
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">Explore by Category</h2>
+                <p class="section-subtitle">Discover high-performance electronics and workspace essentials</p>
+            </div>
+            <a href="{{ url_for('product_views.product_list') }}" class="btn-link">View All Catalog &rarr;</a>
+        </div>
+
+        <div class="category-grid">
+            {% for cat in categories %}
+                <a href="{{ url_for('product_views.product_list', category=cat.id) }}" class="category-card">
+                    <div class="cat-icon-box"><i data-lucide="{{ cat.icon_name }}"></i></div>
+                    <h3 class="cat-name">{{ cat.name }}</h3>
+                    <p class="cat-desc">{{ cat.description }}</p>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products Grid -->
+<section class="section featured-products-section">
+    <div class="container">
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">Trending & Featured Products</h2>
+                <p class="section-subtitle">Top verified ratings and recommended value champions</p>
+            </div>
+            <a href="{{ url_for('product_views.product_list') }}" class="btn btn-outline btn-sm">Browse All</a>
+        </div>
+
+        <div class="products-grid">
+            {% for product in featured_products %}
+                {% include 'components/product_card.html' %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Platform Pillars Section -->
+<section class="section pillars-section">
+    <div class="container">
+        <div class="pillars-grid">
+            <div class="pillar-card">
+                <div class="pillar-icon"><i data-lucide="brain"></i></div>
+                <h3>AI Shopping Copilot</h3>
+                <p>Stateful multi-turn conversational assistant that extracts budgets, usage priorities, and hardware specifications to rank candidate items.</p>
+            </div>
+            <div class="pillar-card">
+                <div class="pillar-icon"><i data-lucide="scale"></i></div>
+                <h3>Intelligent Product Comparison</h3>
+                <p>Side-by-side technical specification alignment with aspect-based sentiment comparisons and AI comparison verdicts.</p>
+            </div>
+            <div class="pillar-card">
+                <div class="pillar-icon"><i data-lucide="message-square-check"></i></div>
+                <h3>Aspect-Level Review Intelligence</h3>
+                <p>Deep NLP sentiment extraction across battery, sound, build quality, and comfort rather than misleading single average ratings.</p>
+            </div>
+            <div class="pillar-card">
+                <div class="pillar-icon"><i data-lucide="trending-up"></i></div>
+                <h3>Seller Demand Forecasting</h3>
+                <p>Mathematical time-series predictive modeling (Moving Averages, Holt-Winters) to prevent stockouts and detect dead stock.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

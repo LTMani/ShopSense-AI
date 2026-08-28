@@ -1,0 +1,25 @@
+{% extends 'layouts/seller_base.html' %}
+
+{% block page_title %}AI Demand Forecasting Engine{% endblock %}
+{% block page_subtitle %}Mathematical time-series projections with stockout risk indicators{% endblock %}
+
+{% block content %}
+<div class="seller-card">
+    <h3>Select Product for 14-Day Demand Forecast Projection</h3>
+    <div class="forecast-select-box">
+        <select id="forecast-prod-select" class="form-control" onchange="ShopSenseSeller.fetchForecast(this.value)">
+            {% for p in products %}
+                <option value="{{ p.id }}">{{ p.title }} (Current Stock: {{ p.inventory.available_quantity if p.inventory else 0 }})</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- Forecast Output Display Area -->
+    <div id="forecast-output-area" class="forecast-results-box">
+        <div class="empty-state">
+            <p>Select a product above or click below to generate projection.</p>
+            <button class="btn btn-primary" onclick="ShopSenseSeller.fetchForecast(document.getElementById('forecast-prod-select').value)">Generate Forecast</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

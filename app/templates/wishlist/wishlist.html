@@ -1,0 +1,53 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Smart Wishlist — ShopSense AI{% endblock %}
+
+{% block content %}
+<div class="container wishlist-page">
+    <div class="wishlist-header">
+        <div>
+            <h1>Intelligent Wishlist</h1>
+            <p>Track price drops, availability, and alternative recommendations</p>
+        </div>
+    </div>
+
+    {% if wishlist['items'] %}
+        {% if wishlist.insights.total_price_drops_count > 0 %}
+            <div class="alert alert-success">
+                <i data-lucide="trending-down"></i>
+                <span>Great news! <strong>{{ wishlist.insights.total_price_drops_count }}</strong> items in your wishlist have dropped in price. Total savings: <strong>{{ wishlist.insights.total_savings_available|currency }}</strong>.</span>
+            </div>
+        {% endif %}
+
+        <div class="products-grid">
+            {% for item in wishlist['items'] %}
+                <div class="product-card" id="wishlist-item-{{ item.id }}">
+                    {% if item.has_price_dropped %}
+                        <span class="badge badge-sale">Price Drop: Save {{ item.price_drop_amount|currency }}</span>
+                    {% endif %}
+                    <a href="{{ url_for('product_views.product_detail', slug=item.product.slug) }}">
+                        <img src="{{ item.product.primary_image_url }}" alt="{{ item.product.title }}" class="product-image">
+                    </a>
+                    <div class="product-card-body">
+                        <h3>{{ item.product.title }}</h3>
+                        <div class="price-box">
+                            <span class="current-price">{{ item.current_price|currency }}</span>
+                        </div>
+                        <div class="product-actions-row">
+                            <button class="btn btn-primary btn-sm" onclick="ShopSenseCart.add({{ item.product_id }}, 1)">Add to Cart</button>
+                            <button class="btn btn-outline btn-sm" onclick="ShopSenseWishlist.toggle({{ item.product_id }}, this)">Remove</button>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <i data-lucide="heart" class="empty-icon"></i>
+            <h3>Your wishlist is empty</h3>
+            <p>Save items as you browse to track prices and stock changes.</p>
+            <a href="{{ url_for('product_views.product_list') }}" class="btn btn-primary">Discover Products</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
