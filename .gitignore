@@ -1,4 +1,4 @@
-﻿# Python
+# Python
 __pycache__/
 *.py[cod]
 *.class
@@ -32,8 +32,8 @@ venv.bak/
 
 # Environment Variables & Secrets
 .env
-.env.local
-.env.*.local
+.env.*
+.env.example
 *.secret
 *.pem
 *.key
@@ -46,6 +46,10 @@ instance/
 *.db-journal
 *.db-wal
 *.db-shm
+
+# Archives
+*.zip
+*.tar.gz
 
 # IDE & Editors
 .vscode/
