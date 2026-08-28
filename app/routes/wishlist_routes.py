@@ -15,12 +15,21 @@ def wishlist_page():
 
 
 @wishlist_api_bp.route('/toggle', methods=['POST'])
-@login_required
 def api_toggle_wishlist():
-    data = request.get_json() or {}
-    product_id = int(data.get('product_id', 0))
-    if not product_id:
-        return jsonify({'error': 'Product ID is required'}), 400
+    if not current_user.is_authenticated:
+        return jsonify({'error': 'Please log in to save items to your wishlist', 'requires_login': True}), 401
 
-    res = wishlist_service.toggle_wishlist(current_user.id, product_id)
-    return jsonify(res)
+    data = request.get_json(silent=True) or request.form or {}
+    try:
+        product_id = int(data.get('product_id', 0))
+    except (ValueError, TypeError):
+        product_id = 0
+
+    if not product_id:
+        return jsonify({'error': 'A valid Product ID is required'}), 400
+
+    try:
+        res = wishlist_service.toggle_wishlist(current_user.id, product_id)
+        return jsonify(res)
+    except Exception as err:
+        return jsonify({'error': str(err)}), 400

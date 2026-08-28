@@ -5,15 +5,23 @@ const ShopSenseCart = {
     async add(productId, quantity = 1) {
         try {
             const res = await ShopSenseAPI.post('/api/cart/add', {
-                product_id: productId,
-                quantity: quantity
+                product_id: parseInt(productId, 10),
+                quantity: parseInt(quantity, 10) || 1
             });
             if (res.success) {
                 ShopSenseState.updateCartBadge(res.cart.total_items_count);
                 ShopSenseToast.success('Item added to cart!');
             }
         } catch (err) {
-            ShopSenseToast.error(err.message || 'Failed to add item to cart');
+            const msg = err.message || '';
+            if (msg.toLowerCase().includes('log in') || msg.toLowerCase().includes('auth')) {
+                ShopSenseToast.info('Please sign in to add items to your cart');
+                setTimeout(() => {
+                    window.location.href = '/login?next=' + encodeURIComponent(window.location.pathname);
+                }, 1000);
+            } else {
+                ShopSenseToast.error(msg || 'Failed to add item to cart');
+            }
         }
     },
 

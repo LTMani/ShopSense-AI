@@ -15,39 +15,69 @@ def cart_page():
 
 
 @cart_api_bp.route('/', methods=['GET'])
-@login_required
 def api_get_cart():
+    if not current_user.is_authenticated:
+        return jsonify({'error': 'Please log in to view cart', 'requires_login': True}), 401
     cart_data = cart_service.get_cart_with_intelligence(current_user.id)
     return jsonify(cart_data)
 
 
 @cart_api_bp.route('/add', methods=['POST'])
-@login_required
 def api_add_to_cart():
-    data = request.get_json() or {}
-    product_id = int(data.get('product_id', 0))
-    quantity = int(data.get('quantity', 1))
+    if not current_user.is_authenticated:
+        return jsonify({'error': 'Please log in to add items to your cart', 'requires_login': True}), 401
+
+    data = request.get_json(silent=True) or request.form or {}
+    try:
+        product_id = int(data.get('product_id', 0))
+    except (ValueError, TypeError):
+        product_id = 0
+
+    try:
+        quantity = int(data.get('quantity', 1))
+    except (ValueError, TypeError):
+        quantity = 1
 
     if not product_id:
-        return jsonify({'error': 'Product ID is required'}), 400
+        return jsonify({'error': 'A valid Product ID is required'}), 400
 
-    updated_cart = cart_service.add_to_cart(current_user.id, product_id, quantity)
-    return jsonify({'success': True, 'cart': updated_cart})
+    try:
+        updated_cart = cart_service.add_to_cart(current_user.id, product_id, quantity)
+        return jsonify({'success': True, 'cart': updated_cart})
+    except Exception as err:
+        return jsonify({'error': str(err)}), 400
 
 
 @cart_api_bp.route('/update', methods=['POST'])
-@login_required
 def api_update_cart():
-    data = request.get_json() or {}
-    cart_item_id = int(data.get('cart_item_id', 0))
-    quantity = int(data.get('quantity', 1))
+    if not current_user.is_authenticated:
+        return jsonify({'error': 'Please log in to update your cart', 'requires_login': True}), 401
 
-    updated_cart = cart_service.update_quantity(current_user.id, cart_item_id, quantity)
-    return jsonify({'success': True, 'cart': updated_cart})
+    data = request.get_json(silent=True) or request.form or {}
+    try:
+        cart_item_id = int(data.get('cart_item_id', 0))
+    except (ValueError, TypeError):
+        cart_item_id = 0
+
+    try:
+        quantity = int(data.get('quantity', 1))
+    except (ValueError, TypeError):
+        quantity = 1
+
+    try:
+        updated_cart = cart_service.update_quantity(current_user.id, cart_item_id, quantity)
+        return jsonify({'success': True, 'cart': updated_cart})
+    except Exception as err:
+        return jsonify({'error': str(err)}), 400
 
 
 @cart_api_bp.route('/remove/<int:cart_item_id>', methods=['DELETE', 'POST'])
-@login_required
 def api_remove_from_cart(cart_item_id):
-    updated_cart = cart_service.remove_item(current_user.id, cart_item_id)
-    return jsonify({'success': True, 'cart': updated_cart})
+    if not current_user.is_authenticated:
+        return jsonify({'error': 'Please log in to remove items', 'requires_login': True}), 401
+
+    try:
+        updated_cart = cart_service.remove_item(current_user.id, cart_item_id)
+        return jsonify({'success': True, 'cart': updated_cart})
+    except Exception as err:
+        return jsonify({'error': str(err)}), 400

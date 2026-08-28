@@ -43,13 +43,125 @@ def dashboard():
     )
 
 
-@seller_bp.route('/seller/products')
+from app.models.category import Category
+from app.models.product import Product, ProductImage
+from app.models.inventory import ProductInventory
+from app.extensions import db
+import secrets
+import json
+
+
+@seller_bp.route('/seller/products', methods=['GET', 'POST'])
+@seller_bp.route('/seller/products/new', methods=['GET', 'POST'])
 @login_required
 @seller_required
 def products():
     seller_id = current_user.seller_profile.id
+    categories = Category.query.order_by(Category.display_order).all()
+
+    if request.method == 'POST':
+        title = request.form.get('title', '').strip()
+        brand = request.form.get('brand', '').strip()
+        try:
+            category_id = int(request.form.get('category_id', 1))
+        except (ValueError, TypeError):
+            category_id = 1
+
+        try:
+            base_price = float(request.form.get('base_price', 0))
+        except (ValueError, TypeError):
+            base_price = 0.0
+
+        try:
+            sale_price = float(request.form.get('sale_price') or base_price)
+        except (ValueError, TypeError):
+            sale_price = base_price
+
+        try:
+            cost_price = float(request.form.get('cost_price') or (sale_price * 0.70))
+        except (ValueError, TypeError):
+            cost_price = sale_price * 0.70
+
+        try:
+            stock_qty = int(request.form.get('stock_quantity', 50))
+        except (ValueError, TypeError):
+            stock_qty = 50
+
+        target_usage = request.form.get('target_usage', 'office, productivity')
+        description = request.form.get('description', f"High quality {brand} product engineered for {target_usage}.")
+        features_raw = request.form.get('key_features', '')
+        features = [f.strip() for f in features_raw.split(',') if f.strip()] or [f"{brand} premium build", "1-year warranty"]
+
+        if not title or base_price <= 0:
+            flash("Product title and a valid positive price are required.", "danger")
+            return redirect(url_for('seller_views.products'))
+
+        # Generate unique SKU and slug
+        sku_suffix = secrets.token_hex(3).upper()
+        sku = f"SKU-{sku_suffix}"
+        slug_base = title.lower().replace(' ', '-').replace('/', '-')
+        slug = f"{slug_base}-{sku_suffix.lower()}"
+
+        product = Product(
+            sku=sku,
+            title=title,
+            slug=slug,
+            brand=brand or 'Generic',
+            model_number=f"MOD-{sku_suffix}",
+            category_id=category_id,
+            seller_id=seller_id,
+            short_description=description[:200] if description else f"Premium {title}",
+            description=description or f"Complete specifications for {title}.",
+            base_price=base_price,
+            sale_price=sale_price,
+            cost_price=cost_price,
+            discount_percentage=round(((base_price - sale_price) / base_price) * 100, 1) if base_price > sale_price else 0.0,
+            weight_kg=1.0,
+            warranty_months=12,
+            average_rating=4.5,
+            total_reviews_count=1,
+            views_count=10,
+            purchases_count=0,
+            target_usage=target_usage,
+            is_active=True,
+            is_featured=False
+        )
+        product.set_key_features_list(features)
+        product.aspect_sentiment_summary = json.dumps({'battery': 85, 'performance': 90, 'build_quality': 88, 'value': 92})
+        db.session.add(product)
+        db.session.flush()
+
+        # Add Inventory
+        inventory = ProductInventory(
+            product_id=product.id,
+            seller_id=seller_id,
+            available_quantity=stock_qty,
+            reserved_quantity=0,
+            safety_stock=10,
+            reorder_point=20,
+            reorder_quantity=50,
+            supplier_lead_time_days=7,
+            daily_sales_velocity=1.0,
+            stock_status='in_stock' if stock_qty > 15 else ('low_stock' if stock_qty > 0 else 'out_of_stock')
+        )
+        db.session.add(inventory)
+
+        # Add ProductImage
+        img = ProductImage(
+            product_id=product.id,
+            image_url=product.primary_image_url,
+            alt_text=f"{product.title} view",
+            is_primary=True,
+            display_order=0
+        )
+        db.session.add(img)
+        db.session.commit()
+
+        flash(f"Product '{title}' added to your catalog successfully!", "success")
+        return redirect(url_for('seller_views.products'))
+
     seller_prods = product_repo.get_by_seller(seller_id)
-    return render_template('seller/products.html', products=seller_prods)
+    return render_template('seller/products.html', products=seller_prods, categories=categories)
 
 
 @seller_bp.route('/seller/inventory')

@@ -5,8 +5,11 @@
 
 {% block content %}
 <div class="seller-card">
-    <div class="card-header-row">
+    <div class="card-header-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
         <h3>Your Listed Products ({{ products|length }} SKUs)</h3>
+        <button class="btn btn-primary btn-sm" onclick="document.getElementById('add-product-modal').style.display='flex'">
+            <i data-lucide="plus"></i> Add New Product
+        </button>
     </div>
 
     <div class="table-responsive">
@@ -54,6 +57,73 @@
                 {% endfor %}
             </tbody>
         </table>
+    </div>
+</div>
+
+<!-- Add Product Modal -->
+<div id="add-product-modal" class="modal-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; padding: 1.5rem;">
+    <div class="modal-box" style="background: var(--color-surface, #1e293b); color: var(--color-text, #f8fafc); border-radius: 12px; padding: 2rem; max-width: 650px; width: 100%; max-height: 90vh; overflow-y: auto; border: 1px solid var(--color-border, #334155);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="margin: 0;">Add New Product to Catalog</h3>
+            <button type="button" class="btn-close" onclick="document.getElementById('add-product-modal').style.display='none'" style="background: none; border: none; font-size: 1.5rem; color: inherit; cursor: pointer;">&times;</button>
+        </div>
+
+        <form action="{{ url_for('seller_views.products') }}" method="POST">
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label for="p-title" style="display: block; margin-bottom: 0.25rem;">Product Title *</label>
+                <input type="text" id="p-title" name="title" class="form-control" placeholder="e.g., UltraBook 15 Pro M3" required style="width: 100%;">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <div class="form-group">
+                    <label for="p-brand" style="display: block; margin-bottom: 0.25rem;">Brand Name *</label>
+                    <input type="text" id="p-brand" name="brand" class="form-control" placeholder="e.g., Apple, Dell, Sony" required style="width: 100%;">
+                </div>
+                <div class="form-group">
+                    <label for="p-cat" style="display: block; margin-bottom: 0.25rem;">Category *</label>
+                    <select id="p-cat" name="category_id" class="form-control" required style="width: 100%;">
+                        {% for cat in categories %}
+                            <option value="{{ cat.id }}">{{ cat.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <div class="form-group">
+                    <label for="p-base-price" style="display: block; margin-bottom: 0.25rem;">Base MRP (₹) *</label>
+                    <input type="number" id="p-base-price" name="base_price" class="form-control" placeholder="49999" min="1" step="1" required style="width: 100%;">
+                </div>
+                <div class="form-group">
+                    <label for="p-sale-price" style="display: block; margin-bottom: 0.25rem;">Sale Price (₹)</label>
+                    <input type="number" id="p-sale-price" name="sale_price" class="form-control" placeholder="44999" min="1" step="1" style="width: 100%;">
+                </div>
+                <div class="form-group">
+                    <label for="p-stock" style="display: block; margin-bottom: 0.25rem;">Initial Stock</label>
+                    <input type="number" id="p-stock" name="stock_quantity" class="form-control" value="50" min="1" style="width: 100%;">
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label for="p-usage" style="display: block; margin-bottom: 0.25rem;">Target Usage / Keywords</label>
+                <input type="text" id="p-usage" name="target_usage" class="form-control" placeholder="e.g., coding, gaming, travel, office" value="coding, productivity" style="width: 100%;">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label for="p-features" style="display: block; margin-bottom: 0.25rem;">Key Specifications (Comma separated)</label>
+                <input type="text" id="p-features" name="key_features" class="form-control" placeholder="e.g., 16GB DDR5 RAM, 512GB SSD, 12-Hour Battery" style="width: 100%;">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label for="p-desc" style="display: block; margin-bottom: 0.25rem;">Product Description</label>
+                <textarea id="p-desc" name="description" class="form-control" rows="3" placeholder="Detailed product specifications and benefits..." style="width: 100%;"></textarea>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+                <button type="button" class="btn btn-outline" onclick="document.getElementById('add-product-modal').style.display='none'">Cancel</button>
+                <button type="submit" class="btn btn-primary"><i data-lucide="plus"></i> Add Product</button>
+            </div>
+        </form>
     </div>
 </div>
 {% endblock %}
